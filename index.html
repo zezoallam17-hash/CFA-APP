@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CFA Study" />
+  <title>CFA Study Companion</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <style>
+    :root {
+      --bg1: #f8fafc;
+      --bg2: #eef2ff;
+      --surface: rgba(255,255,255,.86);
+      --surface-2: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --line: #e2e8f0;
+      --accent: #2563eb;
+      --accent-2: #1d4ed8;
+      --soft: #f8fafc;
+      --important-bg: #fffbeb;
+      --important-line: #fde68a;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --shadow: 0 10px 30px rgba(15, 23, 42, .08);
+      --radius: 24px;
+      --radius-sm: 18px;
+    }
+    body.dark {
+      --bg1: #020617;
+      --bg2: #0f172a;
+      --surface: rgba(15,23,42,.82);
+      --surface-2: #0f172a;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --line: #1e293b;
+      --accent: #60a5fa;
+      --accent-2: #3b82f6;
+      --soft: #020617;
+      --important-bg: rgba(245, 158, 11, .1);
+      --important-line: rgba(253, 224, 71, .25);
+      --danger: #f87171;
+      --success: #4ade80;
+      --shadow: 0 12px 36px rgba(0, 0, 0, .28);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(59,130,246,.16), transparent 28%),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg1) 48%, var(--bg2) 100%);
+      transition: background .25s ease, color .25s ease;
+    }
+    .app {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: max(16px, env(safe-area-inset-top)) 16px calc(100px + env(safe-area-inset-bottom));
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      margin-bottom: 14px;
+      padding: 8px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 28px;
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+    .topbar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 8px;
+      border-radius: 22px;
+      background: color-mix(in srgb, var(--surface-2) 82%, transparent);
+    }
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin-bottom: 2px;
+    }
+    .title { font-size: 18px; font-weight: 700; }
+    .icon-btn, .btn {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      transition: transform .12s ease, background .2s ease, color .2s ease, border-color .2s ease;
+    }
+    .icon-btn:active, .btn:active { transform: scale(.98); }
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: color-mix(in srgb, var(--surface-2) 96%, transparent);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+    .grid { display: grid; gap: 14px; }
+    .grid.two { grid-template-columns: 1fr; }
+    .grid.three { grid-template-columns: 1fr; }
+    .card {
+      border-radius: var(--radius);
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .card-body { padding: 18px; }
+    .card h2, .card h3, .card h4, .card p { margin: 0; }
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 19px;
+      margin-bottom: 6px;
+    }
+    .card-subtitle { color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .kpi-grid { display: grid; gap: 10px; grid-template-columns: repeat(2, 1fr); }
+    .kpi {
+      border-radius: 22px;
+      background: color-mix(in srgb, var(--soft) 90%, transparent);
+      border: 1px solid var(--line);
+      padding: 14px;
+    }
+    .kpi-label { color: var(--muted); font-size: 13px; }
+    .kpi-value { margin-top: 6px; font-size: 22px; font-weight: 700; }
+    .progress-wrap { margin-top: 12px; }
+    .progress-head { display: flex; justify-content: space-between; color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+    .progress {
+      height: 12px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--soft) 75%, transparent);
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-radius: 999px;
+      transition: width .3s ease;
+    }
+    .stack { display: grid; gap: 12px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 11px;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface-2) 90%, transparent);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .section-card {
+      border-radius: 22px;
+      background: color-mix(in srgb, var(--surface-2) 92%, transparent);
+      border: 1px solid var(--line);
+      padding: 14px;
+    }
+    .section-card.important {
+      background: var(--important-bg);
+      border-color: var(--important-line);
+    }
+    .section-title { font-size: 17px; font-weight: 700; }
+    .section-text { margin-top: 6px; color: var(--muted); font-size: 14px; line-height: 1.55; white-space: pre-wrap; }
+    .input, .textarea, .file-input {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface-2) 96%, transparent);
+      color: var(--text);
+      border-radius: 18px;
+      padding: 13px 14px;
+      font: inherit;
+      outline: none;
+    }
+    .textarea { min-height: 104px; resize: vertical; }
+    .input:focus, .textarea:focus, .file-input:focus, .search-wrap:focus-within {
+      border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+    .btn {
+      border-radius: 18px;
+      padding: 13px 16px;
+      font-weight: 700;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      color: white;
+    }
+    .btn.secondary {
+      background: color-mix(in srgb, var(--surface-2) 96%, transparent);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+    .btn.danger { background: linear-gradient(180deg, #ef4444, #dc2626); }
+    .btn.ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .row > * { flex: 1 1 180px; }
+    .check-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border-radius: 18px;
+      padding: 12px;
+      background: color-mix(in srgb, var(--surface-2) 96%, transparent);
+      border: 1px solid var(--line);
+    }
+    .check-row input { margin-top: 2px; transform: scale(1.2); accent-color: var(--accent); }
+    .list { display: grid; gap: 12px; }
+    .search-wrap { position: relative; border-radius: 18px; }
+    .search-wrap .input { padding-left: 40px; }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      pointer-events: none;
+    }
+    .week-card, .item-card {
+      border-radius: 22px;
+      background: color-mix(in srgb, var(--surface-2) 96%, transparent);
+      border: 1px solid var(--line);
+      padding: 14px;
+    }
+    .week-meta, .note-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+    .week-title, .item-title { font-size: 18px; font-weight: 700; }
+    .meta-line { color: var(--muted); font-size: 14px; margin-top: 4px; line-height: 1.5; }
+    .meta-line strong { color: var(--text); }
+    .small-input { margin-top: 10px; }
+    .note-highlight {
+      margin-top: 12px;
+      border-radius: 18px;
+      padding: 12px;
+      border: 1px solid var(--important-line);
+      background: color-mix(in srgb, var(--surface-2) 82%, var(--important-bg));
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+    .gallery {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .gallery-item {
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface-2) 96%, transparent);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      display: block;
+    }
+    .gallery-label {
+      padding: 8px 10px;
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mini-gallery img { height: 96px; }
+    .toggle-row { display: flex; align-items: center; gap: 10px; }
+    .toggle-row input { transform: scale(1.18); accent-color: var(--accent); }
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      padding: 10px 12px calc(12px + env(safe-area-inset-bottom));
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      border-top: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .bottom-nav-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      border-radius: 24px;
+      padding: 8px;
+      background: color-mix(in srgb, var(--surface-2) 92%, transparent);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+    }
+    .nav-btn {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 18px;
+      padding: 10px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .nav-btn.active { background: color-mix(in srgb, var(--soft) 88%, transparent); color: var(--text); }
+    .icon { width: 19px; height: 19px; display: inline-block; }
+    .hidden { display: none !important; }
+    .hr { height: 1px; background: var(--line); margin: 6px 0; }
+    .danger-text { color: var(--danger); }
+    .muted { color: var(--muted); }
+    .text-right { text-align: right; }
+    .file-zone {
+      border: 1px dashed var(--line);
+      background: color-mix(in srgb, var(--soft) 86%, transparent);
+      border-radius: 22px;
+      padding: 14px;
+    }
+    .footer-tip { font-size: 13px; color: var(--muted); line-height: 1.55; }
+    .dialog-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2,6,23,.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 60;
+      padding: 20px;
+    }
+    .dialog {
+      max-width: 420px;
+      width: 100%;
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    @media (min-width: 860px) {
+      .app { padding-left: 22px; padding-right: 22px; }
+      .grid.two { grid-template-columns: 1.15fr .85fr; }
+      .grid.three { grid-template-columns: repeat(3, 1fr); }
+      .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div>
+          <div class="eyebrow">CFA Level I</div>
+          <div class="title">Study Companion</div>
+        </div>
+        <button class="icon-btn" id="themeToggle" aria-label="Toggle dark mode"></button>
+      </div>
+    </div>
+
+    <main id="page-home" class="page">
+      <div class="grid two">
+        <section class="card">
+          <div class="card-body">
+            <div class="card-title">🎯 Keep it simple. Keep it moving.</div>
+            <p class="card-subtitle">Mobile-first, editable, auto-saved, and built for your CFA routine.</p>
+            <div class="progress-wrap">
+              <div class="progress-head"><span>Overall Progress</span><span id="progressText">0%</span></div>
+              <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+            </div>
+            <div class="kpi-grid" style="margin-top:12px">
+              <div class="kpi"><div class="kpi-label">Weeks Completed</div><div class="kpi-value" id="kpiCompleted">0</div></div>
+              <div class="kpi"><div class="kpi-label">Questions Solved</div><input class="input small-input" id="questionsSolved" inputmode="numeric"></div>
+              <div class="kpi"><div class="kpi-label">Study Hours</div><input class="input small-input" id="studyHours" inputmode="decimal"></div>
+              <div class="kpi"><div class="kpi-label">Average Mock</div><div class="kpi-value" id="avgMock">—</div></div>
+            </div>
+          </div>
+        </section>
+        <section class="card">
+          <div class="card-body">
+            <div class="card-title">✅ Today</div>
+            <div class="section-card">
+              <div class="eyebrow">Current Focus</div>
+              <div class="section-title" id="todayCurrentTopic">Week 1</div>
+              <div class="section-text" id="todayCurrentFocus"></div>
+            </div>
+            <div class="stack" id="todayChecklist" style="margin-top:12px"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="grid two" style="margin-top:14px">
+        <section class="card">
+          <div class="card-body">
+            <div class="card-title">🗓️ Current Week</div>
+            <div class="section-card">
+              <div class="week-meta"><span class="pill" id="currentWeekPill"></span><span class="pill" id="currentDatePill"></span></div>
+              <div class="section-title" id="currentWeekTopic"></div>
+              <div class="meta-line"><strong>Focus:</strong> <span id="currentWeekFocus"></span></div>
+              <div class="meta-line"><strong>Target:</strong> <span id="currentWeekTarget"></span></div>
+            </div>
+            <textarea class="textarea" id="currentWeekNotes" placeholder="Write this week’s quick notes here" style="margin-top:12px"></textarea>
+            <div class="row" style="margin-top:12px"><button class="btn" id="toggleCurrentWeekDone">Mark Week Done</button></div>
+          </div>
+        </section>
+        <section class="card">
+          <div class="card-body">
+            <div class="card-title">⭐ Quick Snapshot</div>
+            <div class="stack" id="snapshotList"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <main id="page-plan" class="page hidden">
+      <section class="card"><div class="card-body">
+        <div class="card-title">🗓️ Weekly Plan</div>
+        <div class="search-wrap"><span class="search-icon">🔎</span><input class="input" id="planSearch" placeholder="Search by week, topic, or note"></div>
+        <div class="list" id="planList" style="margin-top:12px"></div>
+      </div></section>
+    </main>
+
+    <main id="page-notes" class="page hidden">
+      <div class="grid two">
+        <section class="card"><div class="card-body">
+          <div class="card-title">📝 Visual Notes</div>
+          <div class="search-wrap"><span class="search-icon">🔎</span><input class="input" id="notesSearch" placeholder="Search notes by topic or keyword"></div>
+          <div class="list" id="notesList" style="margin-top:12px"></div>
+        </div></section>
+        <section class="card"><div class="card-body">
+          <div class="card-title">🖼️ Add Note</div>
+          <div class="stack">
+            <input class="input" id="noteTitle" placeholder="Note title">
+            <input class="input" id="noteTopic" placeholder="Topic">
+            <textarea class="textarea" id="noteHighlight" placeholder="Highlighted key point"></textarea>
+            <textarea class="textarea" id="noteBody" placeholder="Main note"></textarea>
+            <div class="file-zone">
+              <div style="font-weight:700;margin-bottom:8px">Upload images</div>
+              <input class="file-input" type="file" id="noteImages" accept="image/*" multiple>
+            </div>
+            <div class="gallery mini-gallery" id="noteImagePreview"></div>
+            <label class="toggle-row section-card"><input type="checkbox" id="noteImportant"> <span>Mark this note as important</span></label>
+            <button class="btn" id="saveNoteBtn">Save Note</button>
+          </div>
+        </div></section>
+      </div>
+    </main>
+
+    <main id="page-glossary" class="page hidden">
+      <div class="grid two">
+        <section class="card"><div class="card-body">
+          <div class="card-title">📘 Glossary</div>
+          <div class="search-wrap"><span class="search-icon">🔎</span><input class="input" id="glossarySearch" placeholder="Search English or Arabic"></div>
+          <div class="list" id="glossaryList" style="margin-top:12px"></div>
+        </div></section>
+        <section class="card"><div class="card-body">
+          <div class="card-title">➕ Add Term</div>
+          <div class="stack">
+            <input class="input" id="glossaryTerm" placeholder="Term">
+            <textarea class="textarea" id="glossarySimple" placeholder="Simple English meaning"></textarea>
+            <input class="input" id="glossaryArabic" placeholder="Arabic meaning">
+            <textarea class="textarea" id="glossaryExample" placeholder="Small example"></textarea>
+            <button class="btn" id="addGlossaryBtn">Add Term</button>
+          </div>
+        </div></section>
+      </div>
+    </main>
+
+    <main id="page-more" class="page hidden">
+      <div class="grid two">
+        <section class="card"><div class="card-body">
+          <div class="card-title">⚠️ Error Log</div>
+          <div class="search-wrap"><span class="search-icon">🔎</span><input class="input" id="errorSearch" placeholder="Search by topic, mistake, or fix"></div>
+          <div class="list" id="errorList" style="margin-top:12px"></div>
+        </div></section>
+        <section class="card"><div class="card-body">
+          <div class="card-title">➕ Add Error</div>
+          <div class="stack">
+            <input class="input" id="errorTopic" placeholder="Topic">
+            <input class="input" id="errorType" placeholder="Type: concept, formula, terminology...">
+            <textarea class="textarea" id="errorMistake" placeholder="What was the mistake?"></textarea>
+            <textarea class="textarea" id="errorFix" placeholder="How will you fix it next time?"></textarea>
+            <button class="btn" id="addErrorBtn">Add Error</button>
+          </div>
+        </div></section>
+      </div>
+
+      <div class="grid two" style="margin-top:14px">
+        <section class="card"><div class="card-body">
+          <div class="card-title">📈 Mock Tracker</div>
+          <div class="grid three" id="mockList"></div>
+        </div></section>
+        <section class="card"><div class="card-body">
+          <div class="card-title">💾 Backup and Reset</div>
+          <div class="stack">
+            <button class="btn" id="exportBtn">Export Data</button>
+            <label class="btn secondary" style="text-align:center">
+              Import Data
+              <input type="file" id="importFile" accept="application/json" class="hidden">
+            </label>
+            <button class="btn ghost" id="resetBtn">Reset App</button>
+            <div class="section-card footer-tip">Tip: export your data once in a while so you always have a backup. Images can make storage heavy, so keep screenshots reasonably sized.</div>
+          </div>
+        </div></section>
+      </div>
+    </main>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="bottom-nav-inner" id="navButtons"></div>
+  </div>
+
+  <div class="dialog-backdrop" id="resetDialog">
+    <div class="dialog">
+      <div class="card-title">Reset all saved data?</div>
+      <p class="card-subtitle" style="margin-top:8px">This clears your saved progress, glossary, notes, images, errors, and mock data.</p>
+      <div class="row" style="margin-top:14px">
+        <button class="btn secondary" id="cancelResetBtn">Cancel</button>
+        <button class="btn danger" id="confirmResetBtn">Yes, reset</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'cfa_mobile_app_v5';
+    const THEME_KEY = 'cfa_mobile_app_theme';
+
+    const defaultPlan = [
+      { week: 1, dates: 'Mar 15–21', topic: 'Quantitative Methods', focus: 'TVM, compounding, discounting', target: 'Finish core concepts + 60 questions', completed: false, notes: '', score: '' },
+      { week: 2, dates: 'Mar 22–28', topic: 'Quantitative Methods', focus: 'Probability, sampling, hypothesis basics', target: 'Finish topic + 80 questions', completed: false, notes: '', score: '' },
+      { week: 3, dates: 'Mar 29–Apr 4', topic: 'Quantitative Methods', focus: 'Review + calculator speed', target: 'Mixed quant review + formula list', completed: false, notes: '', score: '' },
+      { week: 4, dates: 'Apr 5–11', topic: 'Financial Statement Analysis', focus: 'Income statement + balance sheet', target: 'Readings + 50 questions', completed: false, notes: '', score: '' },
+      { week: 5, dates: 'Apr 12–18', topic: 'Financial Statement Analysis', focus: 'Cash flow statement + ratios', target: 'Readings + 70 questions', completed: false, notes: '', score: '' },
+      { week: 6, dates: 'Apr 19–25', topic: 'Financial Statement Analysis', focus: 'Inventory, long-lived assets', target: 'Readings + error log update', completed: false, notes: '', score: '' },
+      { week: 7, dates: 'Apr 26–May 2', topic: 'Financial Statement Analysis', focus: 'Taxes, EPS, quality of earnings', target: 'Topic review + 100 mixed questions', completed: false, notes: '', score: '' },
+      { week: 8, dates: 'May 3–9', topic: 'Corporate Issuers', focus: 'Capital budgeting + cost of capital', target: 'Finish readings + 50 questions', completed: false, notes: '', score: '' },
+      { week: 9, dates: 'May 10–16', topic: 'Corporate Issuers / Economics', focus: 'Leverage + market structures', target: 'Finish topic + glossary update', completed: false, notes: '', score: '' },
+      { week: 10, dates: 'May 17–23', topic: 'Economics', focus: 'Macroeconomics + business cycles', target: 'Readings + 60 questions', completed: false, notes: '', score: '' },
+      { week: 11, dates: 'May 24–30', topic: 'Economics', focus: 'Monetary / fiscal policy + FX basics', target: 'Finish topic + review', completed: false, notes: '', score: '' },
+      { week: 12, dates: 'May 31–Jun 6', topic: 'Equity Investments', focus: 'Market organization + indexes', target: 'Readings + 50 questions', completed: false, notes: '', score: '' },
+      { week: 13, dates: 'Jun 7–13', topic: 'Equity Investments', focus: 'Industry analysis + company analysis', target: 'Readings + 60 questions', completed: false, notes: '', score: '' },
+      { week: 14, dates: 'Jun 14–20', topic: 'Equity Investments', focus: 'Valuation basics + review', target: 'Topic review + 100 questions', completed: false, notes: '', score: '' },
+      { week: 15, dates: 'Jun 21–27', topic: 'Fixed Income', focus: 'Bond basics + pricing', target: 'Readings + 50 questions', completed: false, notes: '', score: '' },
+      { week: 16, dates: 'Jun 28–Jul 4', topic: 'Fixed Income', focus: 'Yield measures + risks', target: 'Readings + 60 questions', completed: false, notes: '', score: '' },
+      { week: 17, dates: 'Jul 5–11', topic: 'Fixed Income', focus: 'Term structure + review', target: 'Topic review + 100 questions', completed: false, notes: '', score: '' },
+      { week: 18, dates: 'Jul 12–18', topic: 'Derivatives', focus: 'Forward commitments + basics', target: 'Readings + 40 questions', completed: false, notes: '', score: '' },
+      { week: 19, dates: 'Jul 19–25', topic: 'Alternative Investments', focus: 'Real estate, private capital, commodities', target: 'Finish topic + 40 questions', completed: false, notes: '', score: '' },
+      { week: 20, dates: 'Jul 26–Aug 1', topic: 'Portfolio Management', focus: 'Risk / return + diversification', target: 'Readings + 40 questions', completed: false, notes: '', score: '' },
+      { week: 21, dates: 'Aug 2–8', topic: 'Ethics', focus: 'Code and Standards', target: 'Deep study + 70 questions', completed: false, notes: '', score: '' },
+      { week: 22, dates: 'Aug 9–15', topic: 'Ethics', focus: 'Applications + case style questions', target: 'Topic review + 100 questions', completed: false, notes: '', score: '' },
+      { week: 23, dates: 'Aug 16–22', topic: 'Mixed Review', focus: 'Quant + FSA + Equity', target: '150 mixed questions', completed: false, notes: '', score: '' },
+      { week: 24, dates: 'Aug 23–31', topic: 'Mixed Review', focus: 'Fixed Income + Ethics + weak areas', target: '150 mixed questions', completed: false, notes: '', score: '' },
+      { week: 25, dates: 'September', topic: 'Mock Phase', focus: 'Review + mock 1 + corrections', target: '1 full mock + deep review', completed: false, notes: '', score: '' },
+      { week: 26, dates: 'October', topic: 'Mock Phase', focus: 'Mock 2 / 3 + speed + weak areas', target: '2–3 mocks + final review', completed: false, notes: '', score: '' }
+    ];
+
+    const defaultGlossary = [
+      { id: 1, term: 'Present Value', simple: 'Value today of money received in the future', arabic: 'القيمة الحالية', example: 'Discount future cash flow back to today' },
+      { id: 2, term: 'Future Value', simple: 'Value in the future of money invested today', arabic: 'القيمة المستقبلية', example: 'Money grows with interest over time' },
+      { id: 3, term: 'Accrued Interest', simple: 'Interest earned but not yet paid', arabic: 'الفائدة المستحقة', example: 'Bond seller may receive accrued interest' },
+      { id: 4, term: 'Inventory', simple: 'Goods a company holds for sale', arabic: 'المخزون', example: 'Retail products in stock' },
+      { id: 5, term: 'Depreciation', simple: 'Allocating asset cost over useful life', arabic: 'الإهلاك', example: 'Machinery cost spread over years' },
+      { id: 6, term: 'Yield to Maturity', simple: 'Return expected if bond is held to maturity', arabic: 'العائد حتى الاستحقاق', example: 'Bond annualized return estimate' }
+    ];
+
+    const defaultErrors = [
+      { id: 1, topic: 'Quantitative Methods', type: 'Formula', mistake: 'Mixed up nominal and effective rate', fix: 'Review TVM formulas and calculator steps' },
+      { id: 2, topic: 'FSA', type: 'Terminology', mistake: 'Confused cash flow from operations with net income', fix: 'Write a one-line difference in glossary' }
+    ];
+
+    const defaultMocks = [
+      { id: 1, name: 'Mock 1', score: '', weakArea: '', nextAction: 'Take in September' },
+      { id: 2, name: 'Mock 2', score: '', weakArea: '', nextAction: 'Take in October' },
+      { id: 3, name: 'Mock 3', score: '', weakArea: '', nextAction: 'Optional final mock' }
+    ];
+
+    const defaultNotes = [
+      { id: 1, title: 'TVM shortcut', topic: 'Quantitative Methods', body: 'Use the calculator in the same order every time so the process becomes automatic.', highlight: 'Always check whether the rate is annual, monthly, nominal, or effective.', important: true, images: [] }
+    ];
+
+    const checklistItems = [
+      'Review formulas for 10 minutes',
+      'Study the main topic',
+      'Solve at least 20 questions',
+      'Add new glossary terms',
+      'Log mistakes in error log'
+    ];
+
+    const navItems = [
+      { key: 'home', label: 'Home', icon: '🏠' },
+      { key: 'plan', label: 'Plan', icon: '🗓️' },
+      { key: 'notes', label: 'Notes', icon: '📝' },
+      { key: 'glossary', label: 'Glossary', icon: '📘' },
+      { key: 'more', label: 'More', icon: '☰' }
+    ];
+
+    let state = loadState();
+    let draftNoteImages = [];
+    let activePage = 'home';
+
+    const el = (id) => document.getElementById(id);
+
+    function cloneDefaults() {
+      return {
+        plan: structuredClone(defaultPlan),
+        glossary: structuredClone(defaultGlossary),
+        errors: structuredClone(defaultErrors),
+        mocks: structuredClone(defaultMocks),
+        notes: structuredClone(defaultNotes),
+        questionsSolved: '0',
+        studyHours: '0',
+        checks: checklistItems.map(() => false)
+      };
+    }
+
+    function loadState() {
+      const base = cloneDefaults();
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const theme = localStorage.getItem(THEME_KEY);
+        if (theme === 'dark') document.body.classList.add('dark');
+        if (!raw) return base;
+        const saved = JSON.parse(raw);
+        return {
+          ...base,
+          ...saved,
+          checks: Array.isArray(saved.checks) && saved.checks.length === checklistItems.length ? saved.checks : base.checks
+        };
+      } catch {
+        return base;
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+      localStorage.setItem(THEME_KEY, document.body.classList.contains('dark') ? 'dark' : 'light');
+      render();
+    }
+
+    function currentWeek() {
+      return state.plan.find((w) => !w.completed) || state.plan[state.plan.length - 1];
+    }
+
+    function averageMock() {
+      const nums = state.mocks.map((m) => Number(m.score)).filter((n) => !Number.isNaN(n) && n > 0);
+      if (!nums.length) return '—';
+      return Math.round(nums.reduce((a, b) => a + b, 0) / nums.length) + '%';
+    }
+
+    function progress() {
+      const done = state.plan.filter((w) => w.completed).length;
+      return { done, pct: Math.round(done / state.plan.length * 100) };
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? '').replace(/[&<>"]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
+    }
+
+    function renderNav() {
+      const holder = el('navButtons');
+      holder.innerHTML = navItems.map(item => `
+        <button class="nav-btn ${activePage === item.key ? 'active' : ''}" data-page="${item.key}">
+          <span class="icon">${item.icon}</span>
+          <span>${item.label}</span>
+        </button>
+      `).join('');
+      holder.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => showPage(btn.dataset.page));
+      });
+    }
+
+    function showPage(page) {
+      activePage = page;
+      document.querySelectorAll('.page').forEach(node => node.classList.add('hidden'));
+      el(`page-${page}`).classList.remove('hidden');
+      renderNav();
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    function renderHome() {
+      const p = progress();
+      const cw = currentWeek();
+      el('progressText').textContent = p.pct + '%';
+      el('progressBar').style.width = p.pct + '%';
+      el('kpiCompleted').textContent = p.done;
+      el('questionsSolved').value = state.questionsSolved;
+      el('studyHours').value = state.studyHours;
+      el('avgMock').textContent = averageMock();
+      el('todayCurrentTopic').textContent = `Week ${cw.week}: ${cw.topic}`;
+      el('todayCurrentFocus').textContent = cw.focus;
+      const checklist = el('todayChecklist');
+      checklist.innerHTML = checklistItems.map((item, i) => `
+        <label class="check-row"><input type="checkbox" data-check="${i}" ${state.checks[i] ? 'checked' : ''}><span>${escapeHtml(item)}</span></label>
+      `).join('');
+      checklist.querySelectorAll('[data-check]').forEach(box => {
+        box.addEventListener('change', () => {
+          state.checks[Number(box.dataset.check)] = box.checked;
+          saveState();
+        });
+      });
+      el('currentWeekPill').textContent = 'Week ' + cw.week;
+      el('currentDatePill').textContent = cw.dates;
+      el('currentWeekTopic').textContent = cw.topic;
+      el('currentWeekFocus').textContent = cw.focus;
+      el('currentWeekTarget').textContent = cw.target;
+      el('currentWeekNotes').value = cw.notes || '';
+      el('toggleCurrentWeekDone').textContent = cw.completed ? 'Mark Not Done' : 'Mark Week Done';
+      const importantNotes = state.notes.filter(n => n.important).length;
+      const snapshot = [
+        `${state.glossary.length} glossary terms saved`,
+        `${state.notes.length} notes saved`,
+        `${importantNotes} important notes`,
+        `${state.errors.length} mistakes logged`,
+        'Last two months are reserved for mocks and review'
+      ];
+      el('snapshotList').innerHTML = snapshot.map(text => `<div class="section-card">${escapeHtml(text)}</div>`).join('');
+    }
+
+    function renderPlan() {
+      const q = el('planSearch').value.trim().toLowerCase();
+      const list = state.plan.filter(w => `${w.week} ${w.topic} ${w.focus} ${w.target} ${w.notes}`.toLowerCase().includes(q));
+      el('planList').innerHTML = list.map(item => `
+        <div class="week-card">
+          <div class="week-meta">
+            <span class="pill">Week ${item.week}</span>
+            <span class="pill">${escapeHtml(item.dates)}</span>
+            ${item.completed ? '<span class="pill">Done</span>' : ''}
+          </div>
+          <div class="week-title">${escapeHtml(item.topic)}</div>
+          <div class="meta-line"><strong>Focus:</strong> ${escapeHtml(item.focus)}</div>
+          <div class="meta-line"><strong>Target:</strong> ${escapeHtml(item.target)}</div>
+          <input class="input small-input" data-week-score="${item.week}" value="${escapeHtml(item.score)}" placeholder="Weekly score or question accuracy">
+          <textarea class="textarea" data-week-notes="${item.week}" placeholder="Write your notes for this week">${escapeHtml(item.notes)}</textarea>
+          <div class="row">
+            <button class="btn ${item.completed ? 'secondary' : ''}" data-week-toggle="${item.week}">${item.completed ? 'Completed' : 'Mark Done'}</button>
+          </div>
+        </div>
+      `).join('');
+      el('planList').querySelectorAll('[data-week-toggle]').forEach(btn => btn.addEventListener('click', () => {
+        const week = Number(btn.dataset.weekToggle);
+        const item = state.plan.find(w => w.week === week);
+        item.completed = !item.completed;
+        saveState(); render();
+      }));
+      el('planList').querySelectorAll('[data-week-score]').forEach(input => input.addEventListener('input', () => {
+        const item = state.plan.find(w => w.week === Number(input.dataset.weekScore));
+        item.score = input.value; saveState(); renderHome();
+      }));
+      el('planList').querySelectorAll('[data-week-notes]').forEach(input => input.addEventListener('input', () => {
+        const item = state.plan.find(w => w.week === Number(input.dataset.weekNotes));
+        item.notes = input.value; saveState(); renderHome();
+      }));
+    }
+
+    function renderNotes() {
+      const q = el('notesSearch').value.trim().toLowerCase();
+      const list = state.notes.filter(n => `${n.title} ${n.topic} ${n.body} ${n.highlight}`.toLowerCase().includes(q));
+      el('notesList').innerHTML = list.map(note => `
+        <div class="item-card ${note.important ? 'important' : ''}">
+          <div class="note-meta">
+            <span class="item-title">${escapeHtml(note.title || 'Untitled note')}</span>
+            ${note.topic ? `<span class="pill">${escapeHtml(note.topic)}</span>` : ''}
+            ${note.important ? '<span class="pill">⭐ Important</span>' : ''}
+          </div>
+          ${note.highlight ? `<div class="note-highlight">${escapeHtml(note.highlight)}</div>` : ''}
+          ${note.body ? `<div class="section-text">${escapeHtml(note.body)}</div>` : ''}
+          ${(note.images || []).length ? `<div class="gallery">${note.images.map(img => `<div class="gallery-item"><img src="${img.url}" alt="${escapeHtml(img.name)}"><div class="gallery-label">${escapeHtml(img.name)}</div></div>`).join('')}</div>` : ''}
+          <div class="row" style="margin-top:12px"><button class="btn ghost danger-text" data-delete-note="${note.id}">Delete Note</button></div>
+        </div>
+      `).join('');
+      el('notesList').querySelectorAll('[data-delete-note]').forEach(btn => btn.addEventListener('click', () => {
+        state.notes = state.notes.filter(n => n.id !== Number(btn.dataset.deleteNote));
+        saveState(); render();
+      }));
+      renderNoteImagePreview();
+    }
+
+    function renderNoteImagePreview() {
+      el('noteImagePreview').innerHTML = draftNoteImages.map(img => `
+        <div class="gallery-item">
+          <img src="${img.url}" alt="${escapeHtml(img.name)}">
+          <div class="gallery-label">${escapeHtml(img.name)} <button type="button" class="btn ghost" style="padding:6px 8px;float:right" data-remove-draft-image="${img.id}">Remove</button></div>
+        </div>
+      `).join('');
+      el('noteImagePreview').querySelectorAll('[data-remove-draft-image]').forEach(btn => btn.addEventListener('click', () => {
+        draftNoteImages = draftNoteImages.filter(img => img.id !== btn.dataset.removeDraftImage);
+        renderNoteImagePreview();
+      }));
+    }
+
+    function renderGlossary() {
+      const q = el('glossarySearch').value.trim().toLowerCase();
+      const list = state.glossary.filter(g => `${g.term} ${g.simple} ${g.arabic} ${g.example}`.toLowerCase().includes(q));
+      el('glossaryList').innerHTML = list.map(item => `
+        <div class="item-card">
+          <div class="item-title">${escapeHtml(item.term)}</div>
+          <div class="meta-line"><strong>Simple English:</strong> ${escapeHtml(item.simple)}</div>
+          <div class="meta-line"><strong>Arabic:</strong> ${escapeHtml(item.arabic)}</div>
+          <div class="meta-line"><strong>Example:</strong> ${escapeHtml(item.example)}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderErrors() {
+      const q = el('errorSearch').value.trim().toLowerCase();
+      const list = state.errors.filter(e => `${e.topic} ${e.type} ${e.mistake} ${e.fix}`.toLowerCase().includes(q));
+      el('errorList').innerHTML = list.map(item => `
+        <div class="item-card">
+          <div class="week-meta">
+            <span class="pill">${escapeHtml(item.topic)}</span>
+            ${item.type ? `<span class="pill">${escapeHtml(item.type)}</span>` : ''}
+          </div>
+          <div class="meta-line"><strong>Mistake:</strong> ${escapeHtml(item.mistake)}</div>
+          <div class="meta-line"><strong>Fix:</strong> ${escapeHtml(item.fix)}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderMocks() {
+      el('mockList').innerHTML = state.mocks.map(mock => `
+        <div class="item-card">
+          <div class="item-title">${escapeHtml(mock.name)}</div>
+          <input class="input small-input" data-mock-score="${mock.id}" value="${escapeHtml(mock.score)}" placeholder="Score %">
+          <textarea class="textarea" data-mock-weak="${mock.id}" placeholder="Weak areas">${escapeHtml(mock.weakArea)}</textarea>
+          <textarea class="textarea" data-mock-next="${mock.id}" placeholder="Next action">${escapeHtml(mock.nextAction)}</textarea>
+        </div>
+      `).join('');
+      el('mockList').querySelectorAll('[data-mock-score]').forEach(input => input.addEventListener('input', () => {
+        state.mocks.find(m => m.id === Number(input.dataset.mockScore)).score = input.value; saveState(); renderHome();
+      }));
+      el('mockList').querySelectorAll('[data-mock-weak]').forEach(input => input.addEventListener('input', () => {
+        state.mocks.find(m => m.id === Number(input.dataset.mockWeak)).weakArea = input.value; saveState(); renderHome();
+      }));
+      el('mockList').querySelectorAll('[data-mock-next]').forEach(input => input.addEventListener('input', () => {
+        state.mocks.find(m => m.id === Number(input.dataset.mockNext)).nextAction = input.value; saveState(); renderHome();
+      }));
+    }
+
+    function render() {
+      const themeBtn = el('themeToggle');
+      themeBtn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+      renderNav();
+      renderHome();
+      renderPlan();
+      renderNotes();
+      renderGlossary();
+      renderErrors();
+      renderMocks();
+    }
+
+    function bindStaticEvents() {
+      el('themeToggle').addEventListener('click', toggleTheme);
+      el('questionsSolved').addEventListener('input', (e) => { state.questionsSolved = e.target.value; saveState(); });
+      el('studyHours').addEventListener('input', (e) => { state.studyHours = e.target.value; saveState(); });
+      el('currentWeekNotes').addEventListener('input', (e) => { currentWeek().notes = e.target.value; saveState(); renderPlan(); });
+      el('toggleCurrentWeekDone').addEventListener('click', () => { const cw = currentWeek(); cw.completed = !cw.completed; saveState(); render(); });
+      el('planSearch').addEventListener('input', renderPlan);
+      el('notesSearch').addEventListener('input', renderNotes);
+      el('glossarySearch').addEventListener('input', renderGlossary);
+      el('errorSearch').addEventListener('input', renderErrors);
+
+      el('saveNoteBtn').addEventListener('click', () => {
+        const title = el('noteTitle').value.trim();
+        const topic = el('noteTopic').value.trim();
+        const highlight = el('noteHighlight').value.trim();
+        const body = el('noteBody').value.trim();
+        const important = el('noteImportant').checked;
+        if (!title && !body) return;
+        state.notes.unshift({ id: Date.now(), title, topic, highlight, body, important, images: draftNoteImages });
+        el('noteTitle').value = '';
+        el('noteTopic').value = '';
+        el('noteHighlight').value = '';
+        el('noteBody').value = '';
+        el('noteImportant').checked = false;
+        draftNoteImages = [];
+        renderNoteImagePreview();
+        saveState(); renderNotes(); renderHome();
+      });
+
+      el('noteImages').addEventListener('change', async (e) => {
+        const files = Array.from(e.target.files || []);
+        for (const file of files) {
+          const img = await fileToDataUrl(file);
+          draftNoteImages.push(img);
+        }
+        e.target.value = '';
+        renderNoteImagePreview();
+      });
+
+      el('addGlossaryBtn').addEventListener('click', () => {
+        const term = el('glossaryTerm').value.trim();
+        if (!term) return;
+        state.glossary.unshift({
+          id: Date.now(),
+          term,
+          simple: el('glossarySimple').value.trim(),
+          arabic: el('glossaryArabic').value.trim(),
+          example: el('glossaryExample').value.trim()
+        });
+        el('glossaryTerm').value = '';
+        el('glossarySimple').value = '';
+        el('glossaryArabic').value = '';
+        el('glossaryExample').value = '';
+        saveState(); renderGlossary(); renderHome();
+      });
+
+      el('addErrorBtn').addEventListener('click', () => {
+        const topic = el('errorTopic').value.trim();
+        const mistake = el('errorMistake').value.trim();
+        if (!topic || !mistake) return;
+        state.errors.unshift({
+          id: Date.now(),
+          topic,
+          type: el('errorType').value.trim(),
+          mistake,
+          fix: el('errorFix').value.trim()
+        });
+        el('errorTopic').value = '';
+        el('errorType').value = '';
+        el('errorMistake').value = '';
+        el('errorFix').value = '';
+        saveState(); renderErrors(); renderHome();
+      });
+
+      el('exportBtn').addEventListener('click', exportData);
+      el('importFile').addEventListener('change', importData);
+      el('resetBtn').addEventListener('click', () => el('resetDialog').style.display = 'flex');
+      el('cancelResetBtn').addEventListener('click', () => el('resetDialog').style.display = 'none');
+      el('confirmResetBtn').addEventListener('click', () => {
+        state = cloneDefaults();
+        draftNoteImages = [];
+        localStorage.removeItem(STORAGE_KEY);
+        el('resetDialog').style.display = 'none';
+        render();
+      });
+    }
+
+    function exportData() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cfa-study-companion-data.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function importData(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        state = { ...cloneDefaults(), ...data };
+        saveState();
+        render();
+      } catch {
+        alert('Could not import that file. Please choose a valid JSON export from this app.');
+      }
+      e.target.value = '';
+    }
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({ id: crypto.randomUUID(), name: file.name, url: String(reader.result) });
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+    }
+
+    bindStaticEvents();
+    render();
+  </script>
+</body>
+</html>
